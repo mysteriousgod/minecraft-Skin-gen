@@ -1,98 +1,35 @@
-import React, { useState, CSSProperties } from 'react';
+import React, { useState } from 'react';
 import { Pencil, Eraser, Square, RotateCcw, Undo, Redo, Trash2 } from 'lucide-react';
 import { useEditorStore } from '../store/editorStore';
 import type { Tool } from '../types/editor';
-
-const panelStyle: CSSProperties = {
-  backgroundColor: '#f8f8f8',
-  padding: '16px',
-  borderRadius: '4px'
-};
-
-const toolGridStyle: CSSProperties = {
-  display: 'grid',
-  gridTemplateColumns: 'repeat(3, 1fr)',
-  gap: '12px'
-};
-
-const baseToolButtonStyle: CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  padding: '12px',
-  borderRadius: '8px',
-  border: '1px solid #ccc',
-  cursor: 'pointer',
-  backgroundColor: '#fff',
-  transition: 'all 0.2s ease'
-};
-
-const activeToolButtonStyle: CSSProperties = {
-  ...baseToolButtonStyle,
-  backgroundColor: '#666',
-  color: 'white',
-  borderColor: '#666',
-  transform: 'scale(1.02)',
-  boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-};
-
-const actionButtonStyle: CSSProperties = {
-  padding: '8px',
-  borderRadius: '4px',
-  border: '1px solid #ccc',
-  cursor: 'pointer',
-  backgroundColor: '#fff',
-  flex: 1
-};
-
-const modalOverlayStyle: CSSProperties = {
-  position: 'fixed',
-  inset: 0,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  zIndex: 50
-};
-
-const modalContentStyle: CSSProperties = {
-  backgroundColor: '#fff',
-  padding: '16px',
-  borderRadius: '8px',
-  maxWidth: '400px',
-  width: '100%'
-};
 
 export const PaintingTools: React.FC = () => {
   const { tool, setTool, selectedOptionId } = useEditorStore();
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const tools: { id: Tool; icon: React.ReactNode; label: string }[] = [
-    { id: 'pencil', icon: <Pencil size={20} />, label: 'Pencil' },
-    { id: 'fill', icon: <Square size={20} />, label: 'Fill' },
-    { id: 'eraser', icon: <Eraser size={20} />, label: 'Eraser' },
+    { id: 'pencil', icon: <Pencil size={24} />, label: 'Pencil' },
+    { id: 'fill', icon: <Square size={24} />, label: 'Fill Bucket' },
+    { id: 'eraser', icon: <Eraser size={24} />, label: 'Eraser' },
   ];
 
-    // Modify the handleUndo and handleRedo functions
-    const handleUndo = () => {
-      if (typeof (window as any).undoTexture === 'function') {
-        (window as any).undoTexture();
-      }
-    };
-  
-    const handleRedo = () => {
-      if (typeof (window as any).redoTexture === 'function') {
-        (window as any).redoTexture();
-      }
-    };
-  
-    const handleReset = () => {
-      if (typeof (window as any).resetTexture === 'function') {
-        (window as any).resetTexture(selectedOptionId);
-      }
-    };
+  const handleUndo = () => {
+    if (typeof (window as any).undoTexture === 'function') {
+      (window as any).undoTexture();
+    }
+  };
 
- 
+  const handleRedo = () => {
+    if (typeof (window as any).redoTexture === 'function') {
+      (window as any).redoTexture();
+    }
+  };
+
+  const handleReset = () => {
+    if (typeof (window as any).resetTexture === 'function') {
+      (window as any).resetTexture(selectedOptionId);
+    }
+  };
 
   const confirmFullReset = () => {
     if (typeof (window as any).fullResetTexture === 'function') {
@@ -101,13 +38,29 @@ export const PaintingTools: React.FC = () => {
     setShowConfirmModal(false);
   };
 
-  const cancelFullReset = () => {
-    setShowConfirmModal(false);
-  };
-
   return (
-    <div style={panelStyle}>
-      <div style={toolGridStyle}>
+    <div className="flex flex-col gap-4">
+      <div className="flex items-center justify-between mb-2">
+        <h3 className="panel-title mb-0">Tools</h3>
+        <div className="flex bg-slate-800 rounded-lg p-1 gap-1">
+          <button
+            onClick={handleUndo}
+            className="p-1.5 rounded hover:bg-slate-700 text-slate-400 hover:text-white transition-colors"
+            title="Undo"
+          >
+            <Undo size={16} />
+          </button>
+          <button
+            onClick={handleRedo}
+            className="p-1.5 rounded hover:bg-slate-700 text-slate-400 hover:text-white transition-colors"
+            title="Redo"
+          >
+            <Redo size={16} />
+          </button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-3 gap-3">
         {tools.map(({ id, icon, label }) => (
           <button
             key={id}
@@ -116,70 +69,51 @@ export const PaintingTools: React.FC = () => {
                 ? setTool('none')
                 : setTool(id)
             }
-            style={tool === id ? activeToolButtonStyle : baseToolButtonStyle}
+            className={`flex flex-col items-center justify-center p-4 rounded-xl border transition-all duration-200 group ${tool === id
+                ? 'bg-emerald-500/10 border-emerald-500 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.15)]'
+                : 'bg-slate-800/50 border-white/5 text-slate-400 hover:bg-slate-800 hover:border-white/10 hover:text-slate-200'
+              }`}
             title={label}
           >
-            <div style={{ color: tool === id ? '#fff' : '#666' }}>
+            <div className={`mb-2 transform transition-transform group-hover:scale-110 ${tool === id ? 'text-emerald-400' : ''}`}>
               {icon}
             </div>
-            <span style={{ fontSize: '0.75rem', marginTop: '4px' }}>{label}</span>
+            <span className="text-xs font-medium">{label}</span>
           </button>
         ))}
       </div>
 
-      <div style={{ display: 'flex', gap: '8px', marginTop: '16px' }}>
-        <button
-          onClick={handleUndo}
-          style={actionButtonStyle}
-          title="Undo"
-        >
-          <Undo size={16} style={{ margin: '0 auto' }} />
-        </button>
-        <button
-          onClick={handleRedo}
-          style={actionButtonStyle}
-          title="Redo"
-        >
-          <Redo size={16} style={{ margin: '0 auto' }} />
-        </button>
+      <div className="pt-4 mt-2 border-t border-white/5">
         <button
           onClick={handleReset}
-          style={actionButtonStyle}
-          title="Reset Skin"
+          className="w-full glass-button justify-between py-3 bg-red-500/5 hover:bg-red-500/10 hover:border-red-500/30 text-red-300 border-transparent"
         >
-          <RotateCcw size={16} style={{ margin: '0 auto' }} />
+          <span className="flex items-center gap-2">
+            <Trash2 size={16} />
+            Reset Current Skin
+          </span>
+          <RotateCcw size={14} className="opacity-50" />
         </button>
       </div>
 
-
       {showConfirmModal && (
-        <div style={modalOverlayStyle}>
-          <div style={modalContentStyle}>
-            <h2 style={{ fontSize: '1.125rem', fontWeight: 600, marginBottom: '16px' }}>
-              Confirm Full Reset
-            </h2>
-            <p style={{ marginBottom: '16px' }}>
-              This action will clear the entire paint job and cannot be undone. Are you sure you want to continue?
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowConfirmModal(false)} />
+          <div className="glass-panel w-full max-w-sm p-6 rounded-2xl relative z-10 animate-fade-in bg-slate-900 border border-white/10">
+            <h2 className="text-xl font-bold mb-4 text-white">Confirm Reset</h2>
+            <p className="text-slate-400 mb-6">
+              This action will clear the entire paint job and cannot be undone. Are you sure?
             </p>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
-              <button 
-                onClick={cancelFullReset}
-                style={{
-                  ...actionButtonStyle,
-                  padding: '8px 16px'
-                }}
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowConfirmModal(false)}
+                className="glass-button text-sm"
               >
                 Cancel
               </button>
-              <button 
+              <button
                 onClick={confirmFullReset}
-                style={{
-                  ...actionButtonStyle,
-                  padding: '8px 16px',
-                  backgroundColor: '#666',
-                  color: '#fff',
-                  borderColor: '#666'
-                }}
+                className="glass-button bg-red-500/20 text-red-400 border-red-500/30 hover:bg-red-500/30 text-sm"
               >
                 Confirm
               </button>

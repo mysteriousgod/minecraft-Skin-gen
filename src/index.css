@@ -1,44 +1,88 @@
 @import "tailwindcss";
 @config "../tailwind.config.js";
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
 
 @layer base {
   :root {
-    --color-primary: #7FB238;
-    --color-secondary: #866043;
-    --color-background: #FaFaFa;
-    --color-surface: #ffffff;
-    --color-text: #1a1a1a;
-    --color-text-muted: #6b7280;
-    --color-border: #e5e7eb;
-  }
-
-  .dark {
-    --color-primary: #527B24;
-    --color-secondary: #523B28;
-    --color-background: #121212;
-    --color-surface: #1E1E1E;
-    --color-text: #ffffff;
-    --color-text-muted: #9ca3af;
-    --color-border: #374151;
+    --color-primary: #10B981; /* Emerald 500 */
+    --color-primary-dark: #059669; /* Emerald 600 */
+    --color-secondary: #3B82F6; /* Blue 500 */
+    --color-accent: #8B5CF6; /* Violet 500 */
+    
+    --color-background-start: #0f172a; /* Slate 900 */
+    --color-background-end: #1e293b; /* Slate 800 */
+    
+    --color-surface: rgba(30, 41, 59, 0.7);
+    --color-surface-hover: rgba(51, 65, 85, 0.8);
+    
+    --color-text: #f1f5f9;
+    --color-text-muted: #94a3b8;
+    
+    --color-border: rgba(148, 163, 184, 0.1);
+    
+    --radius-sm: 0.375rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
   }
 
   html {
     font-family: 'Inter', sans-serif;
   }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Space Grotesk', sans-serif;
+  }
 
   body {
-    @apply bg-background text-primary antialiased;
-    background-color: var(--color-background);
+    background: radial-gradient(circle at top center, var(--color-background-end), var(--color-background-start));
     color: var(--color-text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+}
+
+@layer components {
+  .glass-panel {
+    @apply backdrop-blur-xl border border-white/10 shadow-2xl;
+    background: var(--color-surface);
+  }
+  
+  .glass-button {
+    @apply px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center justify-center gap-2;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--color-text);
+  }
+  
+  .glass-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--color-primary);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+  }
+  
+  .glass-button.active {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: white;
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+  }
+
+  .input-modern {
+    @apply bg-slate-800/50 border border-slate-700 text-white rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all duration-300;
+  }
+
+  .panel-title {
+    @apply text-sm font-bold uppercase tracking-wider text-slate-400 mb-4 flex items-center gap-2;
   }
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -46,24 +90,29 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-gray-300 rounded-full;
-  background-color: #cbd5e1;
+  background: rgba(148, 163, 184, 0.3);
+  border-radius: 10px;
 }
 
-:hover::-webkit-scrollbar-thumb {
-  @apply bg-gray-400;
-  background-color: #94a3b8;
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.5);
 }
 
-.glass-panel {
-  @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-xl;
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.dark .glass-panel {
-  background: rgba(30, 30, 30, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-pulse-slow {
+  animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .5; }
 }
