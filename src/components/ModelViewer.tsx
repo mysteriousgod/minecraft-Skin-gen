@@ -8,6 +8,7 @@
 import * as THREE from "three";
 import React, { useEffect, useRef, useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Eye, EyeOff } from "lucide-react";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { useEditorStore } from "../store/editorStore";
@@ -647,15 +648,15 @@ const ModelViewer: React.FC = () => {
       boxGroup.add(outerBox);
 
       // Only add grid lines for boxes large enough
-            // ... existing code ...
-      
+      // ... existing code ...
+
       if (width > 2 && height > 2 && depth > 2) {
         const gridMaterial = new THREE.LineBasicMaterial({
           color: 0xffffff,
           transparent: true,
           opacity: isOuter ? 0.3 : 0.4,
         });
-      
+
         const addLines = (
           axis: string,
           fixed: number,
@@ -676,7 +677,7 @@ const ModelViewer: React.FC = () => {
             }
           }
         };
-      
+
         // Vertical lines on front and back faces (Z-aligned)
         addLines(
           'z', depth, width, height,
@@ -685,7 +686,7 @@ const ModelViewer: React.FC = () => {
             (x - w / 2) * s.x, (h / 2) * s.y, (z - d / 2) * s.z
           ]
         );
-      
+
         // Horizontal lines on front and back faces (Z-aligned)
         addLines(
           'z', depth, height, width,
@@ -694,7 +695,7 @@ const ModelViewer: React.FC = () => {
             (w / 2) * s.x, (y - h / 2) * s.y, (z - d / 2) * s.z
           ]
         );
-      
+
         // Vertical lines on left and right faces (X-aligned)
         addLines(
           'x', width, depth, height,
@@ -703,7 +704,7 @@ const ModelViewer: React.FC = () => {
             (x - w / 2) * s.x, (h / 2) * s.y, (z - d / 2) * s.z
           ]
         );
-      
+
         // Horizontal lines on left and right faces (X-aligned)
         addLines(
           'x', width, height, depth,
@@ -712,7 +713,7 @@ const ModelViewer: React.FC = () => {
             (x - w / 2) * s.x, (y - h / 2) * s.y, (d / 2) * s.z
           ]
         );
-      
+
         // Lines on top and bottom faces (x direction)
         addLines(
           'y', height, width, depth,
@@ -721,7 +722,7 @@ const ModelViewer: React.FC = () => {
             (x - w / 2) * s.x, (y - h / 2) * s.y, (d / 2) * s.z
           ]
         );
-      
+
         // Lines on top and bottom faces (z direction)
         addLines(
           'y', height, depth, width,
@@ -731,7 +732,7 @@ const ModelViewer: React.FC = () => {
           ]
         );
       }
-      
+
       // ... existing code ...
 
       return boxGroup;
@@ -1311,85 +1312,59 @@ const ModelViewer: React.FC = () => {
   }, [model]);
 
   return (
-    <div
-      style={{
-        position: "relative",
-        width: "100%",
-        height: "600px",
-        backgroundColor: "#fff",
-        borderRadius: "8px",
-        overflow: "hidden",
-      }}
-    >
-      <div ref={containerRef} style={{ width: "100%", height: "100%" }} />
-      <div
-        style={{
-          position: "absolute",
-          top: "8px",
-          right: "8px",
-          zIndex: 10,
-        }}
-      ></div>
-      <div
-        style={{
-          position: "absolute",
-          bottom: "8px",
-          left: "8px",
-          zIndex: 10,
-          backgroundColor: "rgba(255,255,255,0.8)",
-          padding: "8px",
-          borderRadius: "4px",
-        }}
-      >
-        {/* <div style={{ marginBottom: "8px" }}>
-          <label style={{ fontWeight: "bold" }}>
-            <input
-              type="checkbox"
-              checked={showGrid}
-              onChange={(e) => setShowGrid(e.target.checked)}
-            />
-            Show Grid
-          </label>
-        </div> */}
-        {Object.entries(bodyPartVisibility).map(([part, layers]) => (
-          <div key={part} style={{ marginBottom: "4px" }}>
-            <div style={{ fontWeight: "bold", textTransform: "capitalize" }}>
-              {part.replace(/([A-Z])/g, " $1").trim()}:
+    <div className="relative w-full h-[600px] rounded-xl overflow-hidden glass-panel group ring-1 ring-slate-700/50">
+      <div ref={containerRef} className="w-full h-full cursor-grab active:cursor-grabbing" />
+
+      {/* Visibility Controls Panel - Appears on Hover */}
+      <div className="absolute bottom-4 left-4 z-10 glass-panel p-4 rounded-xl min-w-[220px] transition-all duration-300 opacity-0 transform translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 backdrop-blur-md bg-slate-900/80 border border-slate-700/50 shadow-xl">
+        <h3 className="panel-title mb-3 !mb-2 text-xs">Part Visibility</h3>
+        <div className="space-y-1.5 max-h-[200px] overflow-y-auto pr-1 customize-scrollbar">
+          {Object.entries(bodyPartVisibility).map(([part, layers]) => (
+            <div key={part} className="flex items-center justify-between gap-3 p-1.5 rounded-lg hover:bg-slate-800/50 transition-colors">
+              <span className="text-xs font-medium text-slate-300 capitalize">
+                {part.replace(/([A-Z])/g, " $1").trim()}
+              </span>
+              <div className="flex gap-1.5">
+                <button
+                  onClick={() =>
+                    setBodyPartVisibility((prev) => ({
+                      ...prev,
+                      [part as keyof typeof prev]: {
+                        ...prev[part as keyof typeof prev],
+                        inner: !prev[part as keyof typeof prev].inner,
+                      },
+                    }))
+                  }
+                  className={`p-1.5 rounded-md transition-all duration-200 ${layers.inner
+                    ? "bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30"
+                    : "bg-slate-700/30 text-slate-500 hover:bg-slate-700/50 hover:text-slate-400"
+                    }`}
+                  title="Toggle Inner Layer"
+                >
+                  {layers.inner ? <Eye size={12} /> : <EyeOff size={12} />}
+                </button>
+                <button
+                  onClick={() =>
+                    setBodyPartVisibility((prev) => ({
+                      ...prev,
+                      [part as keyof typeof prev]: {
+                        ...prev[part as keyof typeof prev],
+                        outer: !prev[part as keyof typeof prev].outer,
+                      },
+                    }))
+                  }
+                  className={`p-1.5 rounded-md transition-all duration-200 ${layers.outer
+                    ? "bg-blue-500/20 text-blue-400 hover:bg-blue-500/30"
+                    : "bg-slate-700/30 text-slate-500 hover:bg-slate-700/50 hover:text-slate-400"
+                    }`}
+                  title="Toggle Outer Layer"
+                >
+                  {layers.outer ? <Eye size={12} /> : <EyeOff size={12} />}
+                </button>
+              </div>
             </div>
-            <label style={{ marginRight: "8px" }}>
-              <input
-                type="checkbox"
-                checked={layers.inner}
-                onChange={(e) =>
-                  setBodyPartVisibility((prev) => ({
-                    ...prev,
-                    [part as keyof typeof prev]: {
-                      ...prev[part as keyof typeof prev],
-                      inner: e.target.checked,
-                    },
-                  }))
-                }
-              />
-              Inner
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                checked={layers.outer}
-                onChange={(e) =>
-                  setBodyPartVisibility((prev) => ({
-                    ...prev,
-                    [part as keyof typeof prev]: {
-                      ...prev[part as keyof typeof prev],
-                      outer: e.target.checked,
-                    },
-                  }))
-                }
-              />
-              Outer
-            </label>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );
