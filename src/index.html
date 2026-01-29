@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="card editor clearfix">
+        <div class="card-controls clearfix">
+            <a class="control upload" href="#">Upload</a>
+            <a class="control download" href="#">Download</a>
+        </div>
+        <div class="card-image clearfix">
+            <div class="nav-image-wrapper">
+                <div id="canvas"><canvas width="412" height="490"></canvas></div>
+
+                <div id="bodyparts" class="selector">
+                    <div class="bodyparts">
+                        <span>Body</span>
+                        <div class="bodypart head" data-bodypart="head" data-layer="base"></div>
+                        <div class="bodypart torso" data-bodypart="torso" data-layer="base"></div>
+                        <div class="bodypart arm_left" data-bodypart="left_arm" data-layer="base"></div>
+                        <div class="bodypart arm_right" data-bodypart="right_arm" data-layer="base"></div>
+                        <div class="bodypart leg_left" data-bodypart="left_leg" data-layer="base"></div>
+                        <div class="bodypart leg_right" data-bodypart="right_leg" data-layer="base"></div>
+                    </div>
+                    <div class="bodyparts">
+                        <span>Overlay</span>
+                        <div class="bodypart head hidden" data-bodypart="head" data-layer="overlay"></div>
+                        <div class="bodypart torso hidden" data-bodypart="torso" data-layer="overlay"></div>
+                        <div class="bodypart arm_left hidden" data-bodypart="left_arm" data-layer="overlay"></div>
+                        <div class="bodypart arm_right hidden" data-bodypart="right_arm" data-layer="overlay"></div>
+                        <div class="bodypart leg_left hidden" data-bodypart="left_leg" data-layer="overlay"></div>
+                        <div class="bodypart leg_right hidden" data-bodypart="right_leg" data-layer="overlay"></div>
+                    </div>
+                </div>
+
+                <div class="toggle-select">
+                    <a class="body-selector" href="#"><i class="fa fa-male"></i> Body &amp; Overlay</a>
+                    <div class="selector-overlay" style="display: none;">
+                        <div class="bodyparts">
+                            <span>Body</span>
+                            <div class="bodypart head" data-bodypart="head" data-layer="base"></div>
+                            <div class="bodypart torso" data-bodypart="torso" data-layer="base"></div>
+                            <div class="bodypart arm_left" data-bodypart="left_arm" data-layer="base"></div>
+                            <div class="bodypart arm_right" data-bodypart="right_arm" data-layer="base"></div>
+                            <div class="bodypart leg_left" data-bodypart="left_leg" data-layer="base"></div>
+                            <div class="bodypart leg_right" data-bodypart="right_leg" data-layer="base"></div>
+                        </div>
+                        <div class="bodyparts">
+                            <span>Overlay</span>
+                            <div class="bodypart head hidden" data-bodypart="head" data-layer="overlay"></div>
+                            <div class="bodypart torso hidden" data-bodypart="torso" data-layer="overlay"></div>
+                            <div class="bodypart arm_left hidden" data-bodypart="left_arm" data-layer="overlay"></div>
+                            <div class="bodypart arm_right hidden" data-bodypart="right_arm" data-layer="overlay"></div>
+                            <div class="bodypart leg_left hidden" data-bodypart="left_leg" data-layer="overlay"></div>
+                            <div class="bodypart leg_right hidden" data-bodypart="right_leg" data-layer="overlay"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="editor-controls">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="control-icons">
+                        <ul>
+                            <li>
+                                <a href="#" class="brush tool active" data-toggle="tooltip" data-placement="top" title="" data-original-title="Paint brush">
+                                    <i class="fa fa-paint-brush"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="dropper tool" data-toggle="tooltip" data-placement="top" title="" data-original-title="Select a color">
+                                    <i class="fa fa-eyedropper"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="bucket tool" data-toggle="tooltip" data-placement="top" title="" data-original-title="Fill">
+                                    <span class="entypo-bucket"></span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="brightness-up" data-toggle="tooltip" data-placement="top" title="" data-original-title="Increase brightness">
+                                    <i class="fa fa-star-o"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="brightness-down" data-toggle="tooltip" data-placement="top" title="" data-original-title="Decrease brightness">
+                                    <i class="fa fa-star"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="erase tool" data-toggle="tooltip" data-placement="top" title="" data-original-title="Erase">
+                                    <i class="fa fa-eraser"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="zoom-in" data-toggle="tooltip" data-placement="top" title="" data-original-title="Zoom in">
+                                    <i class="fa fa-search-plus"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="zoom-out" data-toggle="tooltip" data-placement="top" title="" data-original-title="Zoom out">
+                                    <i class="fa fa-search-minus"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="move" data-toggle="tooltip" data-placement="top" title="" data-original-title="Move skin">
+                                    <i class="fa fa-arrows"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="center" data-toggle="tooltip" data-placement="top" title="" data-original-title="Reset view">
+                                    <i class="fa fa-crosshairs"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="undo disabled" data-toggle="tooltip" data-placement="top" title="" data-original-title="Undo">
+                                    <i class="fa fa-rotate-left"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="redo disabled" data-toggle="tooltip" data-placement="top" title="" data-original-title="Redo">
+                                    <i class="fa fa-rotate-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="color-controls-wrapper">
+                <div class="color-controls row">
+                    <div class="swatch active">
+                        <div class="minicolors minicolors-theme-default minicolors-position-bottom minicolors-position-left"><input type="text" id="color-one" class="form-control demo color active minicolors-input" value="#0074d9" size="7"><span class="minicolors-swatch minicolors-sprite"><span class="minicolors-swatch-color" style="background-color: rgb(0, 116, 217);"></span></span><div class="minicolors-panel minicolors-slider-hue"><div class="minicolors-slider minicolors-sprite"><div class="minicolors-picker" style="top: 63.3641px;"></div></div><div class="minicolors-opacity-slider minicolors-sprite"><div class="minicolors-picker"></div></div><div class="minicolors-grid minicolors-sprite" style="background-color: rgb(0, 136, 255);"><div class="minicolors-grid-inner"></div><div class="minicolors-picker" style="top: 22px; left: 150px;"><div></div></div></div></div></div>
+                    </div>
+                    <div class="swatch">
+                        <div class="minicolors minicolors-theme-default minicolors-position-bottom minicolors-position-left"><input type="text" id="color-two" class="form-control demo color minicolors-input" value="#01ff70" size="7"><span class="minicolors-swatch minicolors-sprite"><span class="minicolors-swatch-color" style="background-color: rgb(1, 255, 112);"></span></span><div class="minicolors-panel minicolors-slider-hue"><div class="minicolors-slider minicolors-sprite"><div class="minicolors-picker" style="top: 89.0748px;"></div></div><div class="minicolors-opacity-slider minicolors-sprite"><div class="minicolors-picker"></div></div><div class="minicolors-grid minicolors-sprite" style="background-color: rgb(0, 255, 111);"><div class="minicolors-grid-inner"></div><div class="minicolors-picker" style="top: 0px; left: 150px;"><div></div></div></div></div></div>
+                    </div>
+                    <div class="swatch">
+                        <div class="minicolors minicolors-theme-default minicolors-position-bottom minicolors-position-left"><input type="text" id="color-three" class="form-control demo color right minicolors-input" value="#ffdc00" size="7"><span class="minicolors-swatch minicolors-sprite"><span class="minicolors-swatch-color" style="background-color: rgb(255, 220, 0);"></span></span><div class="minicolors-panel minicolors-slider-hue"><div class="minicolors-slider minicolors-sprite"><div class="minicolors-picker" style="top: 128.431px;"></div></div><div class="minicolors-opacity-slider minicolors-sprite"><div class="minicolors-picker"></div></div><div class="minicolors-grid minicolors-sprite" style="background-color: rgb(255, 221, 0);"><div class="minicolors-grid-inner"></div><div class="minicolors-picker" style="top: 0px; left: 150px;"><div></div></div></div></div></div>
+                    </div>
+                    <div class="swatch">
+                        <div class="minicolors minicolors-theme-default minicolors-position-bottom minicolors-position-left"><input type="text" id="color-four" class="form-control demo color right minicolors-input" value="#ff851b" size="7"><span class="minicolors-swatch minicolors-sprite"><span class="minicolors-swatch-color" style="background-color: rgb(255, 133, 27);"></span></span><div class="minicolors-panel minicolors-slider-hue"><div class="minicolors-slider minicolors-sprite"><div class="minicolors-picker" style="top: 138.377px;"></div></div><div class="minicolors-opacity-slider minicolors-sprite"><div class="minicolors-picker"></div></div><div class="minicolors-grid minicolors-sprite" style="background-color: rgb(255, 119, 0);"><div class="minicolors-grid-inner"></div><div class="minicolors-picker" style="top: 0px; left: 135px;"><div></div></div></div></div></div>
+                    </div>
+                    <div class="swatch">
+                        <div class="minicolors minicolors-theme-default minicolors-position-bottom minicolors-position-left"><input type="text" id="color-five" class="form-control demo color minicolors-input" value="#ff4136" size="7"><span class="minicolors-swatch minicolors-sprite"><span class="minicolors-swatch-color" style="background-color: rgb(255, 65, 54);"></span></span><div class="minicolors-panel minicolors-slider-hue"><div class="minicolors-slider minicolors-sprite"><div class="minicolors-picker" style="top: 148.632px;"></div></div><div class="minicolors-opacity-slider minicolors-sprite"><div class="minicolors-picker"></div></div><div class="minicolors-grid minicolors-sprite" style="background-color: rgb(255, 13, 0);"><div class="minicolors-grid-inner"></div><div class="minicolors-picker" style="top: 0px; left: 119px;"><div></div></div></div></div></div>
+                    </div>
+                    <div class="swatch">
+                        <div class="minicolors minicolors-theme-default minicolors-position-bottom minicolors-position-left"><input type="text" id="color-six" class="form-control demo color minicolors-input" value="#f012be" size="7"><span class="minicolors-swatch minicolors-sprite"><span class="minicolors-swatch-color" style="background-color: rgb(240, 18, 190);"></span></span><div class="minicolors-panel minicolors-slider-hue"><div class="minicolors-slider minicolors-sprite"><div class="minicolors-picker" style="top: 19.3694px;"></div></div><div class="minicolors-opacity-slider minicolors-sprite"><div class="minicolors-picker"></div></div><div class="minicolors-grid minicolors-sprite" style="background-color: rgb(255, 0, 196);"><div class="minicolors-grid-inner"></div><div class="minicolors-picker" style="top: 8px; left: 139px;"><div></div></div></div></div></div>
+                    </div>
+                    <div class="swatch">
+                        <div class="minicolors minicolors-theme-default minicolors-position-bottom minicolors-position-left"><input type="text" id="color-seven" class="form-control demo color right minicolors-input" value="#ffffff" size="7"><span class="minicolors-swatch minicolors-sprite"><span class="minicolors-swatch-color" style="background-color: rgb(255, 255, 255);"></span></span><div class="minicolors-panel minicolors-slider-hue"><div class="minicolors-slider minicolors-sprite"><div class="minicolors-picker" style="top: 0px;"></div></div><div class="minicolors-opacity-slider minicolors-sprite"><div class="minicolors-picker"></div></div><div class="minicolors-grid minicolors-sprite" style="background-color: rgb(255, 0, 0);"><div class="minicolors-grid-inner"></div><div class="minicolors-picker" style="top: 0px; left: 0px;"><div></div></div></div></div></div>
+                    </div>
+                    <div class="swatch">
+                        <div class="minicolors minicolors-theme-default minicolors-position-bottom minicolors-position-left"><input type="text" id="color-eight" class="form-control demo color right minicolors-input" value="#111111" size="7"><span class="minicolors-swatch minicolors-sprite"><span class="minicolors-swatch-color" style="background-color: rgb(17, 17, 17);"></span></span><div class="minicolors-panel minicolors-slider-hue"><div class="minicolors-slider minicolors-sprite"><div class="minicolors-picker" style="top: 0px;"></div></div><div class="minicolors-opacity-slider minicolors-sprite"><div class="minicolors-picker"></div></div><div class="minicolors-grid minicolors-sprite" style="background-color: rgb(255, 0, 0);"><div class="minicolors-grid-inner"></div><div class="minicolors-picker" style="top: 139px; left: 0px;"><div></div></div></div></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sub-controls">
+            <div class="row">
+                <div class="col-md-5">
+                    <label for="model">Model</label>
+                    <select class="form-control selectpicker bs-select-hidden" id="model" name="model">
+                        <option value="steve">Steve</option>
+                        <option value="alex">Alex</option>
+                    </select><div class="btn-group bootstrap-select form-control"><button type="button" class="btn dropdown-toggle btn-default" data-toggle="dropdown" data-id="model" title="Steve"><span class="filter-option pull-left">Steve</span>&nbsp;<span class="caret"></span></button><div class="dropdown-menu open"><ul class="dropdown-menu inner" role="menu"><li data-original-index="0" class="selected"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">Steve</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li><li data-original-index="1"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">Alex</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li></ul></div></div>
+                </div>
+                <div class="col-md-5">
+                    <label for="stance">Stance</label>
+                    <select class="form-control selectpicker bs-select-hidden" id="stance" name="stance">
+                        <option value="Default">Default</option>
+                        <option value="Walk">Walk</option>
+                        <option value="Run">Run</option>
+                        <option value="Hug">Hug</option>
+                        <option value="Fly">Fly</option>
+                    </select><div class="btn-group bootstrap-select form-control"><button type="button" class="btn dropdown-toggle btn-default" data-toggle="dropdown" data-id="stance" title="Default"><span class="filter-option pull-left">Default</span>&nbsp;<span class="caret"></span></button><div class="dropdown-menu open"><ul class="dropdown-menu inner" role="menu"><li data-original-index="0" class="selected"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">Default</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li><li data-original-index="1"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">Walk</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li><li data-original-index="2"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">Run</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li><li data-original-index="3"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">Hug</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li><li data-original-index="4"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">Fly</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li></ul></div></div>
+                </div>
+                <div class="col-md-2">
+                    <input name="grid" id="grid" type="checkbox" checked="">
+                    <label for="grid">Grid</label>
+                 </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
