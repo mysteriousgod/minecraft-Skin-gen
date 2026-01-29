@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Download, Upload, Box, User } from 'lucide-react';
 import { useEditorStore } from '../store/editorStore';
 
@@ -158,7 +159,7 @@ export const TopControls: React.FC = () => {
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 w-full">
           <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 w-full md:w-auto">
             <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-start">
-              <div className="flex items-center gap-3">
+              <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
                 <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-400 to-green-600 flex items-center justify-center shadow-lg shadow-emerald-500/20 shrink-0">
                   <Box className="text-white w-6 h-6" />
                 </div>
@@ -166,7 +167,7 @@ export const TopControls: React.FC = () => {
                   <h1 className="font-bold text-xl leading-none tracking-tight text-white mb-0.5">SkinCrafter</h1>
                   <p className="text-xs text-emerald-400 font-medium tracking-wider uppercase">Professional Editor</p>
                 </div>
-              </div>
+              </Link>
 
               {/* Mobile-only menu toggle could go here if needed, but for now we just show everything */}
             </div>
