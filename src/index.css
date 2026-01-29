@@ -1,38 +1,69 @@
-/* CSS Reset */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@layer base {
+  :root {
+    --color-primary: #7FB238;
+    --color-secondary: #866043;
+    --color-background: #FaFaFa;
+    --color-surface: #ffffff;
+    --color-text: #1a1a1a;
+    --color-text-muted: #6b7280;
+    --color-border: #e5e7eb;
+  }
+
+  .dark {
+    --color-primary: #527B24;
+    --color-secondary: #523B28;
+    --color-background: #121212;
+    --color-surface: #1E1E1E;
+    --color-text: #ffffff;
+    --color-text-muted: #9ca3af;
+    --color-border: #374151;
+  }
+
+  html {
+    font-family: 'Inter', sans-serif;
+  }
+
+  body {
+    @apply bg-background text-primary antialiased;
+    background-color: var(--color-background);
+    color: var(--color-text);
+  }
 }
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  line-height: 1.6;
-  font-size: 16px;
-  background-color: #fff;
-  color: #333;
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }
 
-button {
-  cursor: pointer;
-  border: none;
-  background: none;
-  font-family: inherit;
-  font-size: inherit;
+::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-button:focus {
-  outline: none;
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 rounded-full;
+  background-color: #cbd5e1;
 }
 
-input {
-  font-family: inherit;
-  font-size: inherit;
+:hover::-webkit-scrollbar-thumb {
+  @apply bg-gray-400;
+  background-color: #94a3b8;
 }
 
-/* Base styles */
-.app {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+.glass-panel {
+  @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-xl;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+}
+
+.dark .glass-panel {
+  background: rgba(30, 30, 30, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
