@@ -3,7 +3,7 @@ import ModelViewer from './ModelViewer';
 import { TopControls } from './TopControls';
 import { ViewControls } from './ViewControls';
 import { ColorControls } from './ColorControls';
-import { LayerControls } from './LayerControls';
+
 import { PaintingTools } from './PaintingTools';
 
 export const MinecraftSkinEditor: React.FC = () => {
@@ -34,8 +34,7 @@ export const MinecraftSkinEditor: React.FC = () => {
           <div className="lg:col-span-2 flex flex-col gap-6">
             <div className="glass-panel rounded-2xl p-6 h-full animate-fade-in flex flex-col" style={{ animationDelay: '0.3s' }}>
               <PaintingTools />
-              <div className="my-6 border-t border-white/5" />
-              <LayerControls />
+
             </div>
           </div>
         </div>
