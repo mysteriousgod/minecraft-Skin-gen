@@ -59,6 +59,8 @@ export interface EditorState {
   setPaintData: (data: string) => void;
   addHistory: (optionId: string, dataUrl: string) => void;
   clearHistory: (optionId: string) => void;
+  isResetModalOpen: boolean;
+  setResetModalOpen: (isOpen: boolean) => void;
 }
 
 export const useEditorStore = create<EditorState>((set, get) => {
@@ -87,6 +89,7 @@ export const useEditorStore = create<EditorState>((set, get) => {
     zoom: 1,
     reset: 0,
     paintData: "",
+    isResetModalOpen: false,
     setModel: (model) => set({ model }),
     setCustomTexture: (texture) => set({ customTexture: texture }),
     setSelectedOptionId: (id) => set({ selectedOptionId: id }),
@@ -95,6 +98,7 @@ export const useEditorStore = create<EditorState>((set, get) => {
     toggleGrid: () => set((state) => ({ showGrid: !state.showGrid })),
     setColor: (color) => set({ color }),
     setAlpha: (alpha) => set({ alpha }),
+    setResetModalOpen: (isOpen) => set({ isResetModalOpen: isOpen }),
     undo: () => {
       const { selectedOptionId, history, historyIndex } = get();
       const currentHistory = history[selectedOptionId] || [];

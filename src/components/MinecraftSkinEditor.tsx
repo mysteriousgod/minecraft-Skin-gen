@@ -5,6 +5,7 @@ import { ViewControls } from './ViewControls';
 import { ColorControls } from './ColorControls';
 
 import { PaintingTools } from './PaintingTools';
+import { ResetConfirmationModal } from './ResetConfirmationModal';
 
 export const MinecraftSkinEditor: React.FC = () => {
   return (
@@ -39,6 +40,7 @@ export const MinecraftSkinEditor: React.FC = () => {
           </div>
         </div>
       </div>
+      <ResetConfirmationModal />
     </div>
   );
 }

@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Pencil, Eraser, Square, RotateCcw, Undo, Redo, Trash2 } from 'lucide-react';
 import { useEditorStore } from '../store/editorStore';
 import type { Tool } from '../types/editor';
 
 export const PaintingTools: React.FC = () => {
-  const { tool, setTool, selectedOptionId } = useEditorStore();
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const { tool, setTool, setResetModalOpen } = useEditorStore();
 
   const tools: { id: Tool; icon: React.ReactNode; label: string }[] = [
     { id: 'pencil', icon: <Pencil size={24} />, label: 'Pencil' },
@@ -26,16 +25,7 @@ export const PaintingTools: React.FC = () => {
   };
 
   const handleReset = () => {
-    if (typeof (window as any).resetTexture === 'function') {
-      (window as any).resetTexture(selectedOptionId);
-    }
-  };
-
-  const confirmFullReset = () => {
-    if (typeof (window as any).fullResetTexture === 'function') {
-      (window as any).fullResetTexture(selectedOptionId);
-    }
-    setShowConfirmModal(false);
+    setResetModalOpen(true);
   };
 
   return (
@@ -70,8 +60,8 @@ export const PaintingTools: React.FC = () => {
                 : setTool(id)
             }
             className={`flex flex-col items-center justify-center p-4 rounded-xl border transition-all duration-200 group ${tool === id
-                ? 'bg-emerald-500/10 border-emerald-500 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.15)]'
-                : 'bg-slate-800/50 border-white/5 text-slate-400 hover:bg-slate-800 hover:border-white/10 hover:text-slate-200'
+              ? 'bg-emerald-500/10 border-emerald-500 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.15)]'
+              : 'bg-slate-800/50 border-white/5 text-slate-400 hover:bg-slate-800 hover:border-white/10 hover:text-slate-200'
               }`}
             title={label}
           >
@@ -95,32 +85,6 @@ export const PaintingTools: React.FC = () => {
           <RotateCcw size={14} className="opacity-50" />
         </button>
       </div>
-
-      {showConfirmModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowConfirmModal(false)} />
-          <div className="glass-panel w-full max-w-sm p-6 rounded-2xl relative z-10 animate-fade-in bg-slate-900 border border-white/10">
-            <h2 className="text-xl font-bold mb-4 text-white">Confirm Reset</h2>
-            <p className="text-slate-400 mb-6">
-              This action will clear the entire paint job and cannot be undone. Are you sure?
-            </p>
-            <div className="flex justify-end gap-3">
-              <button
-                onClick={() => setShowConfirmModal(false)}
-                className="glass-button text-sm"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={confirmFullReset}
-                className="glass-button bg-red-500/20 text-red-400 border-red-500/30 hover:bg-red-500/30 text-sm"
-              >
-                Confirm
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
