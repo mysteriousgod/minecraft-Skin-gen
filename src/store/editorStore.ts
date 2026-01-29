@@ -5,14 +5,14 @@ import { useEffect } from "react";
 const setupDarkModeListener = (setBackgroundColor: (color: string) => void) => {
   // Initial setup
   const isDark = document.documentElement.classList.contains("dark");
-  setBackgroundColor(isDark ? "#1D1D1D" : "#C6C6C6");
+  setBackgroundColor(isDark ? "#0F172A" : "#FFFFFF");
 
   // Create observer for dark mode changes
   const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
       if (mutation.attributeName === "class") {
         const isDark = document.documentElement.classList.contains("dark");
-        setBackgroundColor(isDark ? "#1D1D1D" : "#C6C6C6");
+        setBackgroundColor(isDark ? "#0F172A" : "#FFFFFF");
       }
     });
   });
@@ -42,6 +42,7 @@ export interface EditorState {
   zoom: number;
   reset: number;
   paintData: string;
+  paintedData: { [optionId: string]: string };
 
   setModel: (model: "steve" | "alex") => void;
   setCustomTexture: (texture: string) => void;
@@ -57,6 +58,7 @@ export interface EditorState {
   setZoom: (zoom: number) => void;
   triggerReset: () => void;
   setPaintData: (data: string) => void;
+  setPaintedData: (data: { optionId: string; paintedData: string }) => void;
   addHistory: (optionId: string, dataUrl: string) => void;
   clearHistory: (optionId: string) => void;
   isResetModalOpen: boolean;
@@ -84,11 +86,12 @@ export const useEditorStore = create<EditorState>((set, get) => {
     backgroundColor:
       typeof window !== "undefined" &&
       document.documentElement.classList.contains("dark")
-        ? "#1D1D1D"
-        : "#C6C6C6",
+        ? "#0F172A"
+        : "#FFFFFF",
     zoom: 1,
     reset: 0,
     paintData: "",
+    paintedData: {},
     isResetModalOpen: false,
     setModel: (model) => set({ model }),
     setCustomTexture: (texture) => set({ customTexture: texture }),
@@ -172,6 +175,12 @@ export const useEditorStore = create<EditorState>((set, get) => {
     setZoom: (zoom) => set({ zoom }),
     triggerReset: () => set((state) => ({ reset: state.reset + 1 })),
     setPaintData: (data) => set({ paintData: data }),
+    setPaintedData: ({ optionId, paintedData }) => set((state) => ({
+        paintedData: {
+            ...state.paintedData,
+            [optionId]: paintedData
+        }
+    })),
     addHistory: (optionId, dataUrl) =>
       set((state) => {
         // Ensure we have valid inputs

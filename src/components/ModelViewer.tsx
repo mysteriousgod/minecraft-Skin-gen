@@ -8,7 +8,26 @@
 import * as THREE from "three";
 import React, { useEffect, useRef, useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Layers, ChevronDown } from "lucide-react";
+// ... (keep surrounding imports if needed, but since this is at the top usually, I will just edit specific blocks)
+
+// I will do this in multiple chunks using replace_file_content or just one smart one if the imports are close.
+// Imports are at the top, component logic mid, JSX bottom.
+// I will use replace_file_content for the JSX part mostly, and assume imports need a separate call or I can match a large block?
+// No, I'll use separate calls if needed.
+// Wait, I can't do multiple calls to replace_file_content in parallel. I'll do one big replace if possible or sequential.
+// The file is huge.
+
+// Let's look at line 11.
+// import { Eye, EyeOff, Layers, ChevronDown } from "lucide-react";
+// I'll update that first. 
+
+// Then I'll update the component body to add state.
+// Then I'll update the JSX.
+
+// Actually, I'll try to do it all in one tool call if I can, but the lines are far apart.
+// I will use multi_replace_file_content.
+
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { useEditorStore } from "../store/editorStore";
@@ -81,6 +100,7 @@ const ModelViewer: React.FC = () => {
     leftLeg: { inner: true, outer: true },
     rightLeg: { inner: true, outer: true },
   });
+  const [showPartsPanel, setShowPartsPanel] = useState(false);
   const isOuterLayer = (name: string): boolean => {
     const lowerName = name.toLowerCase();
     return lowerName.includes("_layer") ||
@@ -377,6 +397,8 @@ const ModelViewer: React.FC = () => {
     },
     [isPaintMode]
   );
+
+
   const exportTexture = () => {
     if (!textureRef.current) return;
     const canvas = textureRef.current.image as HTMLCanvasElement;
@@ -579,6 +601,47 @@ const ModelViewer: React.FC = () => {
       }
     },
     [isPaintMode, paintAtMouse, saveCanvasState]
+  );
+
+  const handleTouchStart = useCallback(
+    (event: TouchEvent) => {
+      if (!isPaintMode) return;
+      event.preventDefault();
+
+      const touch = event.touches[0];
+      // Reuse handleMouseDown logic by creating a compatible event object
+      // We accept 'any' here to bypass strictly typed MouseEvent requirements
+      handleMouseDown({
+        clientX: touch.clientX,
+        clientY: touch.clientY,
+        preventDefault: () => event.preventDefault(),
+        stopPropagation: () => event.stopPropagation()
+      } as any);
+    },
+    [isPaintMode, handleMouseDown]
+  );
+
+  const handleTouchMove = useCallback(
+    (event: TouchEvent) => {
+      if (!isPaintMode || !isPaintingRef.current) return;
+      event.preventDefault();
+
+      const touch = event.touches[0];
+      const rect = rendererRef.current!.domElement.getBoundingClientRect();
+      mouseRef.current.x = ((touch.clientX - rect.left) / rect.width) * 2 - 1;
+      mouseRef.current.y = -((touch.clientY - rect.top) / rect.height) * 2 + 1;
+
+      paintAtMouse();
+    },
+    [isPaintMode, paintAtMouse]
+  );
+
+  const handleTouchEnd = useCallback(
+    (event: TouchEvent) => {
+      if (!isPaintMode) return;
+      handleMouseUp(event as any);
+    },
+    [isPaintMode, handleMouseUp]
   );
 
   const drawGrid = useCallback(() => {
@@ -1135,7 +1198,7 @@ const ModelViewer: React.FC = () => {
     if (!cameraRef.current || !rendererRef.current || !containerRef.current)
       return;
     const width = containerRef.current.offsetWidth;
-    const height = 600;
+    const height = containerRef.current.offsetHeight;
     cameraRef.current.aspect = width / height;
     cameraRef.current.updateProjectionMatrix();
     rendererRef.current.setSize(width, height);
@@ -1151,6 +1214,7 @@ const ModelViewer: React.FC = () => {
       if (containerRef.current) containerRef.current.innerHTML = "";
     };
   }, [model, customTexture]);
+
   useEffect(() => {
     if (!canvasReady) return;
     const canvas = rendererRef.current!.domElement;
@@ -1159,12 +1223,24 @@ const ModelViewer: React.FC = () => {
       canvas.addEventListener("mousemove", handleMouseMove);
       canvas.addEventListener("mouseup", handleMouseUp);
       canvas.addEventListener("mouseleave", handleMouseLeave);
+
+      // Touch events
+      canvas.addEventListener("touchstart", handleTouchStart, { passive: false });
+      canvas.addEventListener("touchmove", handleTouchMove, { passive: false });
+      canvas.addEventListener("touchend", handleTouchEnd);
+
       canvas.style.cursor = "crosshair";
     } else {
       canvas.removeEventListener("mousedown", handleMouseDown);
       canvas.removeEventListener("mousemove", handleMouseMove);
       canvas.removeEventListener("mouseup", handleMouseUp);
       canvas.removeEventListener("mouseleave", handleMouseLeave);
+
+      // Remove touch events
+      canvas.removeEventListener("touchstart", handleTouchStart);
+      canvas.removeEventListener("touchmove", handleTouchMove);
+      canvas.removeEventListener("touchend", handleTouchEnd);
+
       canvas.style.cursor = "grab";
       if (controlsRef.current) controlsRef.current.enabled = true;
     }
@@ -1173,6 +1249,10 @@ const ModelViewer: React.FC = () => {
       canvas.removeEventListener("mousemove", handleMouseMove);
       canvas.removeEventListener("mouseup", handleMouseUp);
       canvas.removeEventListener("mouseleave", handleMouseLeave);
+
+      canvas.removeEventListener("touchstart", handleTouchStart);
+      canvas.removeEventListener("touchmove", handleTouchMove);
+      canvas.removeEventListener("touchend", handleTouchEnd);
     };
   }, [
     isPaintMode,
@@ -1180,6 +1260,9 @@ const ModelViewer: React.FC = () => {
     handleMouseMove,
     handleMouseUp,
     handleMouseLeave,
+    handleTouchStart,
+    handleTouchMove,
+    handleTouchEnd,
     canvasReady,
     initScene,
   ]);
@@ -1311,14 +1394,48 @@ const ModelViewer: React.FC = () => {
     });
   }, [model]);
 
-  return (
-    <div className="relative w-full h-[600px] rounded-xl overflow-hidden glass-panel group ring-1 ring-slate-700/50">
-      <div ref={containerRef} className="w-full h-full cursor-grab active:cursor-grabbing" />
+  // Handle container resize (since window resize might not trigger if only layout changes)
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const resizeObserver = new ResizeObserver(() => {
+      handleResize();
+    });
+    resizeObserver.observe(containerRef.current);
 
-      {/* Visibility Controls Panel - Appears on Hover */}
-      <div className="absolute bottom-4 left-4 z-10 glass-panel p-4 rounded-xl min-w-[220px] transition-all duration-300 opacity-0 transform translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 backdrop-blur-md bg-slate-900/80 border border-slate-700/50 shadow-xl">
-        <h3 className="panel-title mb-3 !mb-2 text-xs">Part Visibility</h3>
-        <div className="space-y-1.5 max-h-[200px] overflow-y-auto pr-1 customize-scrollbar">
+    return () => {
+      resizeObserver.disconnect();
+    }
+  }, [handleResize]); // Re-attach if handleResize changes (it shouldn't basically)
+
+
+  return (
+    <div className="relative w-full h-full rounded-xl overflow-hidden glass-panel group ring-1 ring-slate-700/50">
+      <div ref={containerRef} className="w-full h-full cursor-grab active:cursor-grabbing" style={{ touchAction: 'none' }} />
+
+      {/* Visibility Toggle Button */}
+      <button
+        onClick={() => setShowPartsPanel(!showPartsPanel)}
+        className={`absolute bottom-4 left-4 z-20 glass-button p-3 rounded-xl transition-all duration-300 ${showPartsPanel
+          ? 'bg-emerald-500 text-white shadow-[0_0_20px_rgba(16,185,129,0.3)] border-emerald-400'
+          : 'bg-slate-800/80 text-white hover:bg-slate-700'}`}
+      >
+        {showPartsPanel ? <ChevronDown size={20} /> : <Layers size={20} />}
+      </button>
+
+      {/* Visibility Controls Panel */}
+      <div
+        className={`absolute bottom-20 left-4 z-10 glass-panel p-4 rounded-xl min-w-[220px] transition-all duration-300 transform backdrop-blur-md bg-slate-900/90 border border-slate-700/50 shadow-xl ${showPartsPanel
+          ? 'opacity-100 translate-y-0 pointer-events-auto'
+          : 'opacity-0 translate-y-4 pointer-events-none'
+          }`}
+      >
+        <div className="flex items-center justify-between mb-3 border-b border-white/5 pb-2">
+          <h3 className="panel-title !mb-0 text-xs">Part Visibility</h3>
+          <span className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">
+            {Object.values(bodyPartVisibility).filter(p => p.inner || p.outer).length > 0 ? 'Active' : 'Hidden'}
+          </span>
+        </div>
+        <div className="space-y-1.5 max-h-[250px] overflow-y-auto pr-1 customize-scrollbar">
           {Object.entries(bodyPartVisibility).map(([part, layers]) => (
             <div key={part} className="flex items-center justify-between gap-3 p-1.5 rounded-lg hover:bg-slate-800/50 transition-colors">
               <span className="text-xs font-medium text-slate-300 capitalize">
@@ -1365,8 +1482,8 @@ const ModelViewer: React.FC = () => {
             </div>
           ))}
         </div>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 };
 export default ModelViewer;

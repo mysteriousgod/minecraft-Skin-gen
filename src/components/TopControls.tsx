@@ -155,61 +155,67 @@ export const TopControls: React.FC = () => {
   return (
     <>
       <nav className="glass-panel p-4 rounded-xl flex flex-wrap items-center justify-between gap-4 animate-fade-in border-b-2 border-emerald-500/20">
-        <div className="flex items-center gap-6">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-400 to-green-600 flex items-center justify-center shadow-lg shadow-emerald-500/20">
-              <Box className="text-white w-6 h-6" />
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 w-full">
+          <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 w-full md:w-auto">
+            <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-start">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-400 to-green-600 flex items-center justify-center shadow-lg shadow-emerald-500/20 shrink-0">
+                  <Box className="text-white w-6 h-6" />
+                </div>
+                <div>
+                  <h1 className="font-bold text-xl leading-none tracking-tight text-white mb-0.5">SkinCrafter</h1>
+                  <p className="text-xs text-emerald-400 font-medium tracking-wider uppercase">Professional Editor</p>
+                </div>
+              </div>
+
+              {/* Mobile-only menu toggle could go here if needed, but for now we just show everything */}
             </div>
-            <div>
-              <h1 className="font-bold text-xl leading-none tracking-tight text-white mb-0.5">SkinCrafter</h1>
-              <p className="text-xs text-emerald-400 font-medium tracking-wider uppercase">Professional Editor</p>
+
+            <div className="h-8 w-px bg-white/10 mx-2 hidden md:block" />
+
+            <div className="flex items-center gap-3 w-full sm:w-auto">
+              <div className="relative group w-full sm:w-auto">
+                <select
+                  value={selectedOptionId}
+                  onChange={handleModelChange}
+                  className="input-modern bg-slate-800 border-slate-700 w-full sm:min-w-[180px] pl-10 appearance-none cursor-pointer hover:border-emerald-500/50 transition-colors"
+                >
+                  {options.map((option) => (
+                    <option key={option.id} value={option.id} className="bg-slate-800 text-white py-2">
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none group-hover:text-emerald-400 transition-colors" />
+              </div>
             </div>
           </div>
 
-          <div className="h-8 w-px bg-white/10 mx-2 hidden md:block" />
+          <div className="flex items-center gap-3 w-full md:w-auto justify-end">
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="hidden"
+            />
 
-          <div className="flex items-center gap-3">
-            <div className="relative group">
-              <select
-                value={selectedOptionId}
-                onChange={handleModelChange}
-                className="input-modern bg-slate-800 border-slate-700 min-w-[180px] pl-10 appearance-none cursor-pointer hover:border-emerald-500/50 transition-colors"
-              >
-                {options.map((option) => (
-                  <option key={option.id} value={option.id} className="bg-slate-800 text-white py-2">
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-              <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none group-hover:text-emerald-400 transition-colors" />
-            </div>
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="glass-button text-sm hover:text-emerald-300 flex-1 sm:flex-none"
+            >
+              <Upload size={18} />
+              <span>Import</span>
+            </button>
+
+            <button
+              onClick={handleDownload}
+              className="glass-button bg-emerald-500/10 border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20 hover:text-emerald-300 text-sm font-semibold shadow-[0_0_15px_rgba(16,185,129,0.15)] hover:shadow-[0_0_25px_rgba(16,185,129,0.3)] flex-1 sm:flex-none"
+            >
+              <Download size={18} />
+              <span>Export Skin</span>
+            </button>
           </div>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="hidden"
-          />
-
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            className="glass-button text-sm hover:text-emerald-300"
-          >
-            <Upload size={18} />
-            <span className="hidden sm:inline">Import</span>
-          </button>
-
-          <button
-            onClick={handleDownload}
-            className="glass-button bg-emerald-500/10 border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20 hover:text-emerald-300 text-sm font-semibold shadow-[0_0_15px_rgba(16,185,129,0.15)] hover:shadow-[0_0_25px_rgba(16,185,129,0.3)]"
-          >
-            <Download size={18} />
-            <span className="hidden sm:inline">Export Skin</span>
-          </button>
         </div>
       </nav>
 
